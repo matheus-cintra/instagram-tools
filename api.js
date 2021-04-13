@@ -35,18 +35,18 @@ router.get("/api/v1/instagram/following", async (req, res) => {
   return res.status(200).json({ success: true, following });
 });
 
+router.get("/api/v1/instagram/followers", async (req, res) => {
+  const client = new Instagram({ cookieStore });
+  const followers = await client.getFollowings({ userId: "32979039408" });
+  return res.status(200).json({ success: true, followers });
+});
+
 router.get("/api/v1/instagram/get-user/:username", async (req, res) => {
   const client = new Instagram({ cookieStore });
   const instagram = await client.getUserByUsername({
     username: req.params.username,
   });
   return res.status(200).json({ success: true, instagram });
-});
-
-router.get("/api/v1/instagram/followers", async (req, res) => {
-  const client = new Instagram({ cookieStore });
-  const followers = await client.getFollowings({ userId: "32979039408" });
-  return res.status(200).json({ success: true, followers });
 });
 
 router.get("/api/v1/instagram/compare-follows", async (req, res) => {
@@ -71,10 +71,24 @@ router.get("/api/v1/instagram/compare-follows", async (req, res) => {
       };
     });
 
+    const idsToUnfollow = personsToUnfollow.map(person => person.id)
+
   return res.status(200).json({
     success: true,
     personsToUnfollow,
+    idsToUnfollow
   });
 });
+
+router.post("/api/v1/instagram/unfollow", async (req, res) => {
+  const client = new Instagram({ cookieStore });
+  const ids = req.body.idsToUnfollow;
+
+  for(const id of ids) {
+    // await client.unfollow({ userId: id })
+    await methods.pause(4000);
+    console.warn("Unfollow no Perfil > ", id);
+  }
+})
 
 module.exports = (app) => app.use(router);

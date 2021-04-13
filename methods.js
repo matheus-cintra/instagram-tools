@@ -48,7 +48,14 @@ const getFollowers = async (userId, client) => {
   return followerPersons;
 };
 
+const pause = async (ms) => {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(), ms)
+  })
+}
+
 module.exports = {
   getFollowings,
   getFollowers,
+  pause
 };
